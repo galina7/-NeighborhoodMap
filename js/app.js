@@ -117,9 +117,10 @@ var AppViewModel = function() {
 
     var self = this;
 
-    // self.availableGalleries = ko.observable(availableGalleries);
-    // self.value = ko.observable('');
+    self.availableGalleries = ko.observable(availableGalleries);
 
+
+    //create markers
     availableGalleries.forEach(function(gallery) {
         gallery.marker = markers;
     });
@@ -132,19 +133,13 @@ var AppViewModel = function() {
     }
 
 
-    // self.search = ko.computed(function() {
-    //     // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
-    //      return ko.utils.arrayFilter(self.availableGalleries(), function(place) {
-    //      var match = place.title.toLowerCase().indexOf(self.value().toLowerCase()) >= 0;
-    //      place.marker.setVisible(match);
-    //      return match;
-    //     });
-    //   })
-
-    // for (var i = 0; i < availableGalleries.length; i++) {
-    //   availableGalleries[i].marker = createMarker(new google.maps.LatLng(availableGalleries[i].location));
-    // }
-
+    self.query = ko.observable('');
+    self.search = ko.computed(function() {
+        // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
+         return ko.utils.arrayFilter(self.availableGalleries(), function(gallery) {
+         return gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+        });
+      })
 };
 
 
