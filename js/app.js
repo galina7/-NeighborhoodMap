@@ -1,8 +1,7 @@
 "use strict"
 
-     var map;
-
-     var markers = [];
+     var map,
+          infoWindow;
 
      var availableGalleries = [
           {
@@ -87,16 +86,13 @@ function initMap() {
             info: availableGalleries[i].infoWindow,
             img: availableGalleries[i].img,
           });
-          markers.push(marker);
+          availableGalleries[i].marerObject = marker;
           marker.addListener('click', function() {
             popInfoWindow(this, infoWindow);
           });
       }
-
-    availableGalleries.marker = function() {
-      var self = this;
-      this.markers;
-    }
+      marker.addListener('click', toggleBounce);
+ };     
 
     //creat infoWindow
     function popInfoWindow(marker, infoWindow) {
@@ -109,7 +105,15 @@ function initMap() {
           });
         }
     }
-};
+
+//Got from https://developers.google.com/maps/documentation/javascript/examples/marker-animations
+    function toggleBounce() {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+      }
 
 
 
@@ -120,26 +124,22 @@ var AppViewModel = function() {
     self.availableGalleries = ko.observable(availableGalleries);
 
 
-    //create markers
-    availableGalleries.forEach(function(gallery) {
-        gallery.marker = markers;
-    });
-
-
     //click on gallery to display marker
     self.clickGallery = function(availableGalleries) {
       map.setZoom (18);
       map.setCenter(availableGalleries.location);
-    }
+
+      popInfoWindow(availableGalleries.markerObject, infoWindow);
+    };
 
 
     self.query = ko.observable('');
     self.search = ko.computed(function() {
         // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
          return ko.utils.arrayFilter(self.availableGalleries(), function(gallery) {
-         return gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+              return gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
         });
-      })
+      });
 };
 
 
