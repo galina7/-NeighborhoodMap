@@ -109,8 +109,8 @@ function initMap() {
         dataType: "jsonp",
         // ajax settings
             success: function (response) {
-                var articleStr = response[0];
-                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+                var wikiStr = response[0];
+                var url = 'http://en.wikipedia.org/wiki/' + wikiStr;
 
                 if (infoWindow.marker != marker) {
                   infoWindow.marker = marker;
