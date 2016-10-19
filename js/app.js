@@ -86,34 +86,56 @@ function initMap() {
             info: availableGalleries[i].infoWindow,
             img: availableGalleries[i].img,
           });
-          availableGalleries[i].marerObject = marker;
+          availableGalleries[i].markerObject = marker;
           marker.addListener('click', function() {
             popInfoWindow(this, infoWindow);
           });
       }
-      marker.addListener('click', toggleBounce);
- };     
+ };   
+
+  
 
     //creat infoWindow
     function popInfoWindow(marker, infoWindow) {
-        if (infoWindow.marker != marker) {
-          infoWindow.marker = marker;
-          infoWindow.setContent("<div><img src='"+marker.img+"'/><br /></div><div class='info-title'>"+marker.title+"</div><br /><p class='address'>"+marker.address+"<br />"+marker.phone+"<br /><a href='"+marker.web+"'>"+marker.web+"</a></p>");
-          infoWindow.open(map, marker);
-          infoWindow.addListener("closeclick", function() {
-          infoWindow.setMarker(null);
-          });
-        }
+
+      var marker = marker;
+      var wikiUrl =  'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title + '&format=json&callback=wikiCallback';
+      var wikiRequestTimeout = setTimeout(function() {
+            $wikiElem.text("Failed to get wikipedia resources");
+        },8000);
+
+      $.ajax({
+        url: wikiUrl,
+        dataType: "jsonp",
+        // ajax settings
+            success: function (response) {
+                var articleStr = response[0];
+                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+
+                if (infoWindow.marker != marker) {
+                  infoWindow.marker = marker;
+                  marker.addListener('click', toggleBounce(marker));
+                  infoWindow.setContent("<div><img src='"+marker.img+"'/><br /></div><div class='info-title'>"+marker.title+"</div><br /><p class='address'>"+marker.address+"<br />"+marker.phone+"<br />Wiki Page:<br /><a href='"+url+"'>"+url+"</a></p>");
+                  infoWindow.open(map, marker);
+                  infoWindow.addListener("closeclick", function() {
+                  //infoWindow.setMarker(null);
+                  });
+                }
+            }
+        });
+      clearTimeout(wikiRequestTimeout);
     }
 
 //Got from https://developers.google.com/maps/documentation/javascript/examples/marker-animations
-    function toggleBounce() {
+    function toggleBounce(marker) {
         if (marker.getAnimation() !== null) {
           marker.setAnimation(null);
         } else {
           marker.setAnimation(google.maps.Animation.BOUNCE);
+          setTimeout(function(){ marker.setAnimation(null); }, 750);
         }
       }
+
 
 
 
