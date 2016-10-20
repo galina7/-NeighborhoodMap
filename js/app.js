@@ -64,7 +64,7 @@ function initMap() {
         zoom: 15
       });
 
-      var infoWindow = new google.maps.InfoWindow();
+      infoWindow = new google.maps.InfoWindow();
 
     //create markers
     for (var i = 0; i < availableGalleries.length; i++) {
@@ -101,7 +101,7 @@ function initMap() {
       var marker = marker;
       var wikiUrl =  'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title + '&format=json&callback=wikiCallback';
       var wikiRequestTimeout = setTimeout(function() {
-            $wikiElem.text("Failed to get wikipedia resources");
+            alert("Failed to get wikipedia resources");
         },8000);
 
       $.ajax({
@@ -121,9 +121,9 @@ function initMap() {
                   //infoWindow.setMarker(null);
                   });
                 }
+                clearTimeout(wikiRequestTimeout);
             }
         });
-      clearTimeout(wikiRequestTimeout);
     }
 
 //Got from https://developers.google.com/maps/documentation/javascript/examples/marker-animations
@@ -164,7 +164,10 @@ var AppViewModel = function() {
       });
 };
 
-
+//error to handle Google failure
+var googleFailure = function() {
+    alert('Could not load Google Map. Try again later');
+};
 
 
 // Activates knockout.js
