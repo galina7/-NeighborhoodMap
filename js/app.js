@@ -167,10 +167,14 @@ var AppViewModel = function() {
         // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
          var newArray = ko.utils.arrayFilter(self.availableGalleries(), function(gallery)  {
               if(gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
-                //gallery.marker.setVisible(true);
+                if(gallery.marker) {
+                    gallery.marker.setVisible(true);
+                }
                 return true;
               }else {
-                //gallery.marker.setVisible(false);
+                if(gallery.marker) {
+                    gallery.marker.setVisible(false);
+                }
                 return false;
               }
         });
