@@ -1,6 +1,7 @@
 "use strict"
 
      var map,
+          marker,
           infoWindow;
 
      var availableGalleries = [
@@ -74,7 +75,7 @@ function initMap() {
           var phone = availableGalleries[i].phone;
           var web = availableGalleries[i].web;
           var img = availableGalleries[i].img;
-          var marker = new google.maps.Marker({
+          marker = new google.maps.Marker({
             map: map,
             position: position,
             title: title,
@@ -93,7 +94,6 @@ function initMap() {
       }
  };   
 
-  
 
     //creat infoWindow
     function popInfoWindow(marker, infoWindow) {
@@ -118,7 +118,6 @@ function initMap() {
                   infoWindow.setContent("<div><img src='"+marker.img+"'/><br /></div><div class='info-title'>"+marker.title+"</div><br /><p class='address'>"+marker.address+"<br />"+marker.phone+"<br />Wiki Page:<br /><a href='"+url+"'>"+url+"</a></p>");
                   infoWindow.open(map, marker);
                   infoWindow.addListener("closeclick", function() {
-                  //infoWindow.setMarker(null);
                   });
                 }
                 clearTimeout(wikiRequestTimeout);
@@ -155,13 +154,29 @@ var AppViewModel = function() {
     };
 
 
+
     self.query = ko.observable('');
-    self.search = ko.computed(function() {
+    // self.search = ko.computed(function() {
+    //     // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
+    //      return ko.utils.arrayFilter(self.availableGalleries(), function(gallery) {
+    //           return gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+    //     });
+    //   });
+
+        self.search = ko.computed(function() {
         // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
-         return ko.utils.arrayFilter(self.availableGalleries(), function(gallery) {
-              return gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+         var newArray = ko.utils.arrayFilter(self.availableGalleries(), function(gallery)  {
+              if(gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
+                //gallery.marker.setVisible(true);
+                return true;
+              }else {
+                //gallery.marker.setVisible(false);
+                return false;
+              }
         });
+         return newArray;
       });
+
 };
 
 //error to handle Google failure
